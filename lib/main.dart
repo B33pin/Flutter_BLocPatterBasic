@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:bloc_pattern/counter_bloc.dart';
 import 'package:bloc_pattern/counter_event.dart';
 import 'package:flutter/material.dart';
@@ -35,10 +34,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   final _blocpattern = CounterBloc();
   @override
   Widget build(BuildContext context) {
-    int idata = Hive.box('data').get(1);
+    int idata = Hive.box('data').get(0);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: StreamBuilder(stream: _blocpattern.counter, initialData: idata,builder: (BuildContext context, AsyncSnapshot<int> snapshot){
                     final contactsBox = Hive.box('data');
-                    contactsBox.put(1,snapshot.data!=null?snapshot.data:0);
+                    contactsBox.put(0,snapshot.data!=null?snapshot.data:0);
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           'You have pushed the button this many times:',
                         ),
                         Text(
-                          '${contactsBox.get(1)}',
+                          '${contactsBox.get(0)}',
                           style: Theme.of(context).textTheme.headline4,
                         ),
                       ],
@@ -78,5 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+  @override
+  void dispose() {
+    Hive.box('data').close();
+    super.dispose();
   }
 }
